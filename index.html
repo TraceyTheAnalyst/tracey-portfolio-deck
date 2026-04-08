@@ -59,11 +59,9 @@
   .slide-wrap img{
     width:100%;height:100%;object-fit:contain;
     position:absolute;top:0;left:0;opacity:0;
-    transform:scale(1.05);transition:opacity .55s ease,transform .8s ease;
+    transition:opacity .5s ease;pointer-events:none;
   }
-  .slide-wrap img.active{opacity:1;transform:scale(1);}
-  .slide-wrap img.exit-left{opacity:0;transform:translateX(-50px) scale(.98);}
-  .slide-wrap img.exit-right{opacity:0;transform:translateX(50px) scale(.98);}
+  .slide-wrap img.active{opacity:1;z-index:2;}
 
   .nav{
     position:absolute;top:50%;transform:translateY(-50%);
@@ -165,19 +163,14 @@
     thumbs.appendChild(b);
   });
 
-  function show(n,dir){
-    const prev=i;
+  function show(n){
     i=(n+imgs.length)%imgs.length;
-    imgs.forEach((im,idx)=>{
-      im.classList.remove('active','exit-left','exit-right');
-      if(idx===i)im.classList.add('active');
-      else if(idx===prev)im.classList.add(dir>0?'exit-left':'exit-right');
-    });
+    imgs.forEach((im,idx)=>im.classList.toggle('active',idx===i));
     thumbs.querySelectorAll('button').forEach((b,idx)=>b.classList.toggle('active',idx===i));
     cur.textContent=i+1;
     progress.style.width=((i+1)/imgs.length*100)+'%';
   }
-  function go(d){show(i+d,d);}
+  function go(d){show(i+d);}
 
   function togglePlay(){
     playing=!playing;
@@ -190,8 +183,8 @@
   document.addEventListener('keydown',e=>{
     if(e.key==='ArrowRight'||e.key===' ')go(1);
     if(e.key==='ArrowLeft')go(-1);
-    if(e.key==='Home')show(0,-1);
-    if(e.key==='End')show(imgs.length-1,1);
+    if(e.key==='Home')show(0);
+    if(e.key==='End')show(imgs.length-1);
   });
 
   let tx=0;
@@ -201,7 +194,7 @@
     if(Math.abs(dx)>40)go(dx<0?1:-1);
   });
 
-  show(0,1);
+  show(0);
 </script>
 </body>
 </html>
